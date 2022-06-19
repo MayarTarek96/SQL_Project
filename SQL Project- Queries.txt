@@ -1,0 +1,74 @@
+Query1
+Most Popular Artist
+
+select art.Name, count(il.TrackId) as TotalTracksPurchased
+from Artist art join album  alb
+on art.ArtistId= alb.ArtistId 
+join track t 
+on alb.AlbumId=t.AlbumId
+join InvoiceLine il
+on t.TrackId=il.TrackId
+group by art.Name
+order by  count(il.TrackId) DESC;
+
+——————————————————————————————————————
+
+Query2
+Most Active Employee
+
+
+with t1 as(select e.FirstName as FirstName, e.LastName as LastName ,count(c.SupportRepId)  as TotalNumberOfCustomers
+from Employee e
+join customer c
+on e.EmployeeId=c.SupportRepId
+group by e.EmployeeId
+order by count(c.SupportRepId) DESC),
+
+
+t2 as(select e.FirstName as FirstName,count(i.CustomerId) as TotalNumberOfInvoices
+from Employee e
+join customer c
+on e.EmployeeId=c.SupportRepId
+join invoice i
+on c.CustomerId=i.CustomerId
+group by e.FirstName
+order by count(i.CustomerId) DESC)
+
+select t1.FirstName,t1.LastName,t1.TotalNumberOfCustomers,t2.TotalNumberOfInvoices
+from t1
+join t2
+on t1.FirstName=t2.FirstName
+group by t1.FirstName
+order by t1.TotalNumberOfCustomers
+
+————————————————————————————————————
+
+Query3
+Media Types Purchases
+
+select m.name, count(m.MediaTypeId) as MediaTypesPurchases
+from MediaType m
+join track t
+on t.MediaTypeId=m.MediaTypeId
+join InvoiceLine il
+on il.TrackId=t.TrackId
+group by m.name
+order by MediaTypesPurchases
+
+————————————————————————————————————
+
+Query4
+Most Popular Genre
+
+select  g.name as GenreTitle, count(g.name) as NumberOfTracks
+from genre g
+join track t
+on t.GenreId=g.GenreId
+join invoiceline il
+on il.trackid=t.trackid
+join invoice i
+on i.InvoiceId=il.InvoiceId
+join Customer c
+on c.CustomerId=i.CustomerId
+group by g.name
+order by MostPopularGenre DESC
